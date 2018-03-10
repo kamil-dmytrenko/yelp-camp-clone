@@ -1,20 +1,15 @@
 const express    = require('express'),
       bodyParser = require('body-parser'),
-      app        = express(),
-      mongoose   = require('mongoose');
+      mongoose   = require('mongoose'),
 
+      Campground = require("./models/campground"),
+      seedDB     = require("./seed"),
+      app        = express();
+
+seedDB();
 mongoose.connect("mongodb://localhost/yelp_camp");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
-
-// SCHEMA SETUP
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
 
 // Campground.create({
 //     name: 'Mountain Goat\'s Rest',
@@ -34,6 +29,7 @@ app.get('/', function (req, res) {
     res.render('landing');
 });
 
+//INDEX - show all campgrounds
 app.get('/campgrounds', function (req, res) {
     // get all campgrounds from db
     Campground.find({}, function (err, allCampgrounds) {
@@ -46,6 +42,7 @@ app.get('/campgrounds', function (req, res) {
 
 });
 
+//CREATE - add new campground to DB
 app.post('/campgrounds', function (req, res) {
     var campName = req.body.campName;
     var campImg = req.body.campImg;
@@ -66,12 +63,14 @@ app.post('/campgrounds', function (req, res) {
 
 });
 
+//NEW - show form to create new campground
 app.get('/campgrounds/new', function (req, res) {
     res.render('new');
 });
 
+//SHOW ROUTE
 app.get('/campgrounds/:id', function (req, res) {
-    Campground.findById(req.params.id, function (err, foundCamp) {
+    Campground.findById(req.params.id).populate("comments").exec(function (err, foundCamp) {
         if (err) {
             console.log("Error" + err);
         } else {

@@ -3,6 +3,7 @@ const express    = require('express'),
       mongoose   = require('mongoose'),
 
       Campground = require("./models/campground"),
+      Comment    = require('./models/comment'),
       seedDB     = require("./seed"),
       app        = express();
 
@@ -36,7 +37,7 @@ app.get('/campgrounds', function (req, res) {
         if (err) {
             console.log("Error" + err);
         } else {
-            res.render('index', {camps:allCampgrounds});
+            res.render('campgrounds/index', {camps:allCampgrounds});
         }
     });
 
@@ -65,7 +66,7 @@ app.post('/campgrounds', function (req, res) {
 
 //NEW - show form to create new campground
 app.get('/campgrounds/new', function (req, res) {
-    res.render('new');
+    res.render('campgrounds/new');
 });
 
 //SHOW ROUTE
@@ -74,11 +75,43 @@ app.get('/campgrounds/:id', function (req, res) {
         if (err) {
             console.log("Error" + err);
         } else {
-            res.render('show', {campground: foundCamp});
+            res.render('campgrounds/show', {campground: foundCamp});
         }
     });
 
 
+});
+
+//=====================================
+//COMMENTS ROUTES
+//=====================================
+
+app.get('/campgrounds/:id/comments/new', function (req, res) {
+    Campground.findById(req.params.id, function (err, foundCamp) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('comments/new', {campground: foundCamp});
+        }
+    });
+});
+
+app.post('/campgrounds/:id/comments', function (req, res) {
+    Campground.findById(req.params.id, function (err, foundCamp) {
+        if (err) {
+            console.log(err);
+        } else {
+            Comment.create(req.body.comment, function (err, comment) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    foundCamp.comments.push(comment);
+                    foundCamp.save();
+                    res.redirect('/campgrounds/' + foundCamp._id);
+                }
+            })
+        }
+    });
 });
 
 app.listen(3000, function () {

@@ -1,7 +1,8 @@
 const express    = require('express'),
       bodyParser = require('body-parser'),
       mongoose   = require('mongoose'),
-
+      path       = require('path'),
+      engine     = require('ejs-layout'),
       Campground = require("./models/campground"),
       Comment    = require('./models/comment'),
       seedDB     = require("./seed"),
@@ -10,7 +11,11 @@ const express    = require('express'),
 seedDB();
 mongoose.connect("mongodb://localhost/yelp_camp");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(path.join(__dirname, 'public')));
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.engine('ejs', engine.__express);
 
 // Campground.create({
 //     name: 'Mountain Goat\'s Rest',

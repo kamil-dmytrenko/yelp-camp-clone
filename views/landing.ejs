@@ -1,7 +1,9 @@
-<% include ./partials/header.ejs%>
+<%+ extend('layout') %>
+
+<%+ section('content') %>
 
 <h1>Welcome to Yelp Camp App</h1>
 
 <a href="/campgrounds">View all Campgrounds</a>
 
-<% include ./partials/footer.ejs%>
+<%+ endSection %>

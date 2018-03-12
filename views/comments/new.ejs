@@ -1,4 +1,6 @@
-<% include ../partials/header.ejs%>
+<%+ extend('layout') %>
+
+<%+ section('content') %>
 
 <div class="container">
     <h1>Add New Comment to <%= campground.name %></h1>
@@ -18,4 +20,4 @@
     <a class="btn btn-primary" href="/campgrounds">Go back</a>
 </div>
 
-<% include ../partials/footer.ejs%>
+<%+ endSection %>

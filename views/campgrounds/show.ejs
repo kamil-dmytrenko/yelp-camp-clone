@@ -34,8 +34,8 @@
                     <% campground.comments.forEach(function (comment) { %>
                     <div class="row">
                         <div class="col-md-12">
-                            <%= comment.author %>
-                            <span class="float-right">10 days ago</span>
+                            <%= comment.author.username %>
+                            <span class="float-right"><%= comment.created.toDateString() %></span>
                             <p>
                                 <%= comment.text %>
                             </p>

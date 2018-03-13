@@ -8,9 +8,14 @@ const LocalStrategy = require('passport-local').Strategy;
 const seedDB     = require("./seed");
 
 //MODELS
-const Campground = require("./models/campground");
-const Comment    = require('./models/comment');
-const User       = require('./models/user');
+const Campground = require("./models/campground"),
+      Comment    = require('./models/comment'),
+      User       = require('./models/user');
+
+//ROUTES
+const commentRoutes    = require('./routes/comments'),
+      campgroundRoutes = require('./routes/campgrounds'),
+      authRoutes       = require('./routes/index');
 
 const app        = express();
 
@@ -36,99 +41,30 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function (req, res, next) {
+    res.locals.currentUser = req.user;
+    next();
+})
 
-//ROUTES
+app.use('/campgrounds/:id/comments', commentRoutes);
+app.use('/campgrounds', campgroundRoutes);
+app.use(authRoutes);
 
-app.get('/', function (req, res) {
-    res.render('landing');
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
-//INDEX - show all campgrounds
-app.get('/campgrounds', function (req, res) {
-    // get all campgrounds from db
-    Campground.find({}, function (err, allCampgrounds) {
-        if (err) {
-            console.log("Error" + err);
-        } else {
-            res.render('campgrounds/index', {camps:allCampgrounds});
-        }
-    });
+// error handler
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
-
-//CREATE - add new campground to DB
-app.post('/campgrounds', function (req, res) {
-    var campName = req.body.campName;
-    var campImg = req.body.campImg;
-    var campDescription = req.body.campDescription;
-    var newCamp = {
-        name: campName,
-        image: campImg,
-        description: campDescription
-    };
-
-    Campground.create(newCamp, function (err, newCamp) {
-        if (err) {
-            console.log("Error" + err);
-        } else {
-            res.redirect('/campgrounds');
-        }
-    });
-
-});
-
-//NEW - show form to create new campground
-app.get('/campgrounds/new', function (req, res) {
-    res.render('campgrounds/new');
-});
-
-//SHOW ROUTE
-app.get('/campgrounds/:id', function (req, res) {
-    Campground.findById(req.params.id).populate("comments").exec(function (err, foundCamp) {
-        if (err) {
-            console.log("Error" + err);
-        } else {
-            res.render('campgrounds/show', {campground: foundCamp});
-        }
-    });
-
-
-});
-
-//=====================================
-//COMMENTS ROUTES
-//=====================================
-
-app.get('/campgrounds/:id/comments/new', function (req, res) {
-    Campground.findById(req.params.id, function (err, foundCamp) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render('comments/new', {campground: foundCamp});
-        }
-    });
-});
-
-app.post('/campgrounds/:id/comments', function (req, res) {
-    Campground.findById(req.params.id, function (err, foundCamp) {
-        if (err) {
-            console.log(err);
-        } else {
-            Comment.create(req.body.comment, function (err, comment) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    foundCamp.comments.push(comment);
-                    foundCamp.save();
-                    res.redirect('/campgrounds/' + foundCamp._id);
-                }
-            })
-        }
-    });
-});
-
-//=====================================
-//AUTH ROUTES
-//=====================================
-
 module.exports = app;

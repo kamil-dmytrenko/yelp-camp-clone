@@ -19,6 +19,7 @@ router.get('/', function (req, res) {
 router.post('/', middleware.isLoggedIn, function (req, res) {
     var campName = req.body.campName;
     var campImg = req.body.campImg;
+    var campPrice = req.body.campPrice;
     var author = {
         id: req.user._id,
         username: req.user.username
@@ -27,6 +28,7 @@ router.post('/', middleware.isLoggedIn, function (req, res) {
     var newCamp = {
         name: campName,
         image: campImg,
+        price: campPrice,
         description: campDescription,
         author: author
     };

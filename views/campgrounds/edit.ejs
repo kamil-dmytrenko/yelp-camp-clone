@@ -15,6 +15,11 @@
             <input name="campground[image]" class="form-control" value="<%= campground.image %>">
         </div>
         <div class="form-group">
+            <label>Campground price:</label>
+            <input class="form-control" type="number" min="0.01" step="0.01"
+                   name="campground[price]" value="<%= campground.price %>">
+        </div>
+        <div class="form-group">
             <label>Campground description:</label>
             <input name="campground[description]" class="form-control" value="<%= campground.description %>">
         </div>

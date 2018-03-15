@@ -1,3 +1,7 @@
 .rounded {
     height: 500px;
 }
+
+.delete_form {
+    display: inline-block;
+}

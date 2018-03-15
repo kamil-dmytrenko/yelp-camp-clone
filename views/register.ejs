@@ -1,13 +1,22 @@
 <%+ extend('layout') %>
 
+<%+ section('head') %>
+<link rel="stylesheet" href="/stylesheets/signing.css">
+<%+ endSection %>
+
 <%+ section('content') %>
 
-<h1>Register form</h1>
+<div class="container">
 
-<form action="/register" method="post">
-    <input type="text" name="username" placeholder="username">
-    <input type="password" name="password" placeholder="password">
-    <button>Sign Up</button>
-</form>
+    <form class="form-signin" action="/register" method="post">
+        <h2 class="form-signin-heading">Please sign up</h2>
+        <label class="sr-only">Username</label>
+        <input class="form-control" type="text" name="username" placeholder="Username" required autofocus>
+        <label class="sr-only">Password</label>
+        <input class="form-control" type="password" name="password" placeholder="Password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+    </form>
+
+</div>
 
 <%+ endSection %>

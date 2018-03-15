@@ -1,11 +1,12 @@
-const express    = require('express');
-const bodyParser = require('body-parser');
-const mongoose   = require('mongoose');
-const path       = require('path');
-const engine     = require('ejs-layout');
-const passport   = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const seedDB     = require("./seed");
+const express        = require('express'),
+      bodyParser     = require('body-parser'),
+      mongoose       = require('mongoose'),
+      path           = require('path'),
+      engine         = require('ejs-layout'),
+      passport       = require('passport'),
+      LocalStrategy  = require('passport-local').Strategy,
+      methodOverride = require('method-override'),
+      flash          = require('connect-flash');
 
 //MODELS
 const Campground = require("./models/campground"),
@@ -17,12 +18,14 @@ const commentRoutes    = require('./routes/comments'),
       campgroundRoutes = require('./routes/campgrounds'),
       authRoutes       = require('./routes/index');
 
-const app        = express();
+const app = express();
 
-// seedDB();
 mongoose.connect("mongodb://localhost/yelp_camp");
-app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
+app.use(flash());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,6 +46,8 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function (req, res, next) {
     res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
     next();
 })
 

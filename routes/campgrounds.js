@@ -32,7 +32,6 @@ router.post('/', middleware.isLoggedIn, function (req, res) {
         description: campDescription,
         author: author
     };
-    console.log(req.user);
     Campground.create(newCamp, function (err, newCamp) {
         if (err) {
             console.log("Error" + err);

@@ -41,11 +41,11 @@ router.get('/new', middleware.isLoggedIn, function (req, res) {
 
 //Comment edit
 router.get('/:comment_id/edit',middleware.checkCommentOwnership ,function (req, res) {
-    Comment.findById(req.params.comment_id, function (err, foundComment) {
-        if (err) {
-            console.log("Error" + err);
+    Comment.findById(req.params.comment_id, function(err, foundComment){
+        if(err){
+            res.redirect("back");
         } else {
-            res.render('comments/edit', {comment: foundComment, campgroundid: req.params._id});
+            res.render("comments/edit", {campground_id: req.params.id, comment: foundComment});
         }
     });
 });

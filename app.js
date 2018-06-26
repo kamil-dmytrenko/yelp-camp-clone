@@ -1,76 +1,48 @@
-const express        = require('express'),
-      bodyParser     = require('body-parser'),
-      mongoose       = require('mongoose'),
-      path           = require('path'),
-      engine         = require('ejs-layout'),
-      passport       = require('passport'),
-      LocalStrategy  = require('passport-local').Strategy,
-      methodOverride = require('method-override'),
-      flash          = require('connect-flash');
-
-//MODELS
-const Campground = require("./models/campground"),
-      Comment    = require('./models/comment'),
-      User       = require('./models/user');
-
-//ROUTES
-const commentRoutes    = require('./routes/comments'),
-      campgroundRoutes = require('./routes/campgrounds'),
-      authRoutes       = require('./routes/index');
-
+const methodOverride = require("method-override");
+const LocalStrategy = require("passport-local");
+const cookieParser = require("cookie-parser");
+const flash = require("connect-flash");
+const passport = require("passport");
+const express = require("express");
+const db = require("./models");
 const app = express();
-// mongoose.connect("mongodb://localhost/yelp_camp");
-mongoose.connect("mongodb://metrovsky:jam3mnowe@ds115579.mlab.com:15579/yelp-camp-clone");
 
-app.use(express.static(path.join(__dirname, 'public')));
+//requiring routes
+const campgroundRoutes = require("./routes/campgroundRoutes"),
+      commentRoutes    = require("./routes/commentRoutes"),
+      mainRoutes       = require("./routes/mainRoutes");
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname + "/public"));
+app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
-app.use(flash());
+app.use(cookieParser('secret'));
+app.set("view engine", "ejs");
+app.use(express.json());
+require('./db')(app);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.engine('ejs', engine.__express);
-
-//PASSPORT CONGIGURATION
-app.use(require('express-session')({
-    secret: "i dont know how to cook",
-    resave: false,
-    saveUninitialized: false
+// PASSPORT CONFIGURATION
+app.use(require("express-session")({
+  saveUninitialized: false,
+  secret: "habba babba",
+  resave: false
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+app.use(flash());
+passport.use(new LocalStrategy(db.User.authenticate()));
+passport.deserializeUser(db.User.deserializeUser());
+passport.serializeUser(db.User.serializeUser());
 
-app.use(function (req, res, next) {
-    res.locals.currentUser = req.user;
-    res.locals.error = req.flash("error");
-    res.locals.success = req.flash("success");
-    next();
-})
-
-app.use('/campgrounds/:id/comments', commentRoutes);
-app.use('/campgrounds', campgroundRoutes);
-app.use(authRoutes);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  res.locals.currentUser = req.user;
+  next();
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use("/", mainRoutes);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/comments", commentRoutes);
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
 module.exports = app;

@@ -34,21 +34,28 @@ exports.create = (req, res) => {
 
 exports.getEditForm = (req, res) => {
   // find campground by id
-  Comment.findById(req.params.commentId)
+  db.Comment.findById(req.params.commentId)
     .then(comment =>
-    {res.render("comments/edit", {campground_id: req.params.id, comment: comment})})
-    .catch(err => console.log(err))
-};
-
-exports.editComment = (req, res) => {
-  Comment.findByIdAndUpdate(req.params.commentId, req.body.comment)
-    .then(() => res.redirect("/campgrounds/" + req.params.id))
+      res.render("comments/edit", {campground_id: req.params.id, comment: comment}))
     .catch(err => console.log(err))
 };
 
 exports.deleteComment = (req, res) => {
-  Comment.findByIdAndRemove(req.params.commentId)
+  db.Comment.findByIdAndRemove(req.params.commentId)
+    .then(() => {
+      req.flash('success', 'Your comment was deleted!');
+      res.redirect(req.get('referer'));
+    })
     .catch(err => res.redirect("/campgrounds/" + req.params.id))
+};
+
+exports.editComment = (req, res) => {
+  db.Comment.findByIdAndUpdate(req.params.commentId, req.body.comment)
+    .then(() => {
+      req.flash('success', 'Your comment was updated!');
+      res.redirect("/campgrounds/" + req.params.id);
+    })
+    .catch(err => console.log(err))
 };
 
 module.exports = exports;

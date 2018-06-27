@@ -1,5 +1,8 @@
-const db = require("../models");
+const uploadService = require('../service/imageUploadService');
 const request = require("request");
+const db = require("../models");
+
+
 
 exports.getAll = (req, res) => {
   db.Campground.find({})
@@ -12,21 +15,20 @@ exports.getAll = (req, res) => {
     .catch(err => console.log(err));
 };
 
-exports.addOne = (req, res) => {
-  // get data from form and add to campgrounds array
+exports.addOne = async (req, res) => {
+
   let newCampground = new db.Campground({
     name : req.body.name,
-    image : req.body.image,
-    desc : req.body.description,
+    images : [],
+    description : req.body.description,
     author : {
       id: req.user._id,
       username:req.user.username
     },
   });
-  // Create a new campground and save to DB
-  db.Campground.create(newCampground)
-    .then(() => res.redirect("/campgrounds"))
-    .catch(err => console.log(err))
+  uploadService.upload(req, res, newCampground);
+
+
 };
 
 exports.getCreateForm = (req, res) => {
@@ -35,7 +37,7 @@ exports.getCreateForm = (req, res) => {
 
 exports.showOne = (req, res) => {
   //find the campground with provided ID
-  db.Campground.findById(req.params.id).populate("comments")
+  db.Campground.findById(req.params.id).populate('comments')
     .then(foundCampground => res.render("campgrounds/show", {campground: foundCampground}))
     .catch(err => console.log(err))
 };
@@ -63,6 +65,14 @@ exports.getEditForm = (req, res) => {
   db.Campground.findById(req.params.id)
     .then(foundCampground => res.render("campgrounds/edit", {campground: foundCampground}))
     .catch(err => console.log(err))
+};
+
+exports.deleteOne = (req, res) => {
+  db.Campground.findByIdAndRemove(req.params.id)
+    .then(() => {
+      req.flash('success', 'Your camp was deleted!');
+      res.redirect("/campgrounds")
+    })
 };
 
 module.exports = exports;

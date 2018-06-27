@@ -8,6 +8,11 @@ const campgroundSchema = new mongoose.Schema({
       type: String
     }
   ],
+  facilities: [
+    {
+      type: String
+    }
+  ],
   description: String,
   price: String,
   author: {

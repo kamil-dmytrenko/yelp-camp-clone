@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 
-let port = process.env.PORT || 3000;
-// let CONNECT_URI = 'mongodb://localhost/yelp-camp';
-let CONNECT_URI = 'mongodb://admin:dbadmin1@ds121299.mlab.com:21299/movie-rest-app';
+let port = process.env.PORT;
 
 module.exports = (app) => {
   // Connect to database
-  mongoose.connect(CONNECT_URI)
+  mongoose.connect(process.env.DB_HOST)
     .then(() => {
       //Start app only after connection is ready
       app.listen(port, () => {

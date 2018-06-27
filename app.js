@@ -5,6 +5,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const express = require("express");
 const db = require("./models");
+require('dotenv').config();
 const app = express();
 
 //requiring routes

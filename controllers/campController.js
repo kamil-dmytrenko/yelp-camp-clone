@@ -21,6 +21,7 @@ exports.addOne = async (req, res) => {
     name : req.body.name,
     images : [],
     description : req.body.description,
+    facilities: req.body.facilities,
     author : {
       id: req.user._id,
       username:req.user.username
@@ -70,7 +71,7 @@ exports.getEditForm = (req, res) => {
 exports.deleteOne = (req, res) => {
   db.Campground.findByIdAndRemove(req.params.id)
     .then(() => {
-      req.flash('success', 'Your camp was deleted!');
+      req.flash('error', 'Your camp was deleted!');
       res.redirect("/campgrounds")
     })
 };

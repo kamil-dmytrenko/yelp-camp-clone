@@ -11,5 +11,5 @@ module.exports = (app) => {
         console.log(`Your application is running on http://localhost:${port}`);
       });
     })
-    .catch(err => app.send(err));
+    .catch(err => console.log(err));
 };

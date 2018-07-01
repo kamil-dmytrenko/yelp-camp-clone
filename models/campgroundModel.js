@@ -3,31 +3,34 @@ const mongoose = require('mongoose');
 // SCHEMA SETUP
 const campgroundSchema = new mongoose.Schema({
   name: String,
-  images: [
-    {
-      type: String
-    }
-  ],
+  price: String,
+  lat: Number,
+  lng: Number,
+  location: String,
+  description: String,
   facilities: [
     {
       type: String
     }
   ],
-  description: String,
-  price: String,
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment'
+    }
+  ],
+  images: [
+    {
+      type: String
+    }
+  ],
   author: {
     id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
     username: String
-  },
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment'
-    }
-  ]
+  }
 });
 
 module.exports = mongoose.model("Campground", campgroundSchema);

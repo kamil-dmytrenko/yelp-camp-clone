@@ -9,7 +9,8 @@ cloudinary.config({
 
 exports.upload = (req, res, campground) => {
   req.files.forEach(async (file) => {
-    await cloudinary.uploader.upload(file.path)
+    await cloudinary.uploader.upload(file.path,
+      {secure: true, transformation: [{ width: 150, height: 150, crop: 'thumb'}]})
       .then(result => {
         campground.images.push(result.secure_url);
         if (req.files.length === campground.images.length) {

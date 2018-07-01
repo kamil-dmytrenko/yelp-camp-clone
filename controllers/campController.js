@@ -1,22 +1,29 @@
 const uploadService = require('../service/imageUploadService');
-const request = require("request");
 const db = require("../models");
 
-
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
 
 exports.getAll = (req, res) => {
-  db.Campground.find({})
-    .then(allCampgrounds => {
-      request('https://maps.googleapis.com/maps/api/geocode/json?address=sardine%20lake%20ca&key=AIzaSyBtHyZ049G_pjzIXDKsJJB5zMohfN67llM', function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-          res.render("campgrounds/index",{campgrounds:allCampgrounds});}
-      });
-    })
-    .catch(err => console.log(err));
+  let noMatch = null;
+  if(req.query.search) {
+    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+    // Get all campgrounds from DB
+    db.Campground.find({name: regex})
+      .then(allCampgrounds => {
+          if(allCampgrounds.length < 1) noMatch = "We are sorry but apparently there is no such place available, please try again.";
+          res.render("campgrounds",{campgrounds:allCampgrounds, noMatch: noMatch});
+        })}
+  else {
+    // Get all campgrounds from DB
+    db.Campground.find({})
+      .then(allCampgrounds => res.render("campgrounds",{campgrounds:allCampgrounds, noMatch: noMatch}))
+      .catch(err => console.log(err));
+  }
 };
 
 exports.addOne = async (req, res) => {
-
   let newCampground = new db.Campground({
     name : req.body.name,
     images : [],
@@ -27,45 +34,33 @@ exports.addOne = async (req, res) => {
       username:req.user.username
     },
   });
-  uploadService.upload(req, res, newCampground);
-
-
-};
-
-exports.getCreateForm = (req, res) => {
-  res.render("campgrounds/new");
+  uploadService.upload(req, res, newCampground)
 };
 
 exports.showOne = (req, res) => {
   //find the campground with provided ID
   db.Campground.findById(req.params.id).populate('comments')
-    .then(foundCampground => res.render("campgrounds/show", {campground: foundCampground}))
+    .then(foundCampground => res.render("campground", {campground: foundCampground}))
     .catch(err => console.log(err))
 };
 
 exports.updateOne = (req, res) => {
-  let newData = {
-    name: req.body.name,
-    image: req.body.image,
-    description: req.body.desc
+  let updateCampground = {
+    name : req.body.name,
+    description : req.body.description,
+    facilities: req.body.facilities,
   };
 
-  db.Campground.findByIdAndUpdate(req.params.id, {$set: newData})
+  db.Campground.findByIdAndUpdate(req.params.id, {$set: updateCampground})
     .then(campground => {
       req.flash("success","Successfully Updated!");
-      res.redirect("/campgrounds/" + campground._id);
+      res.redirect(`/campgrounds/${campground._id}`);
     })
     .catch(err => {
       req.flash("error", err.message);
       res.redirect("back");
     })
-};
 
-exports.getEditForm = (req, res) => {
-  //find the campground with provided ID
-  db.Campground.findById(req.params.id)
-    .then(foundCampground => res.render("campgrounds/edit", {campground: foundCampground}))
-    .catch(err => console.log(err))
 };
 
 exports.deleteOne = (req, res) => {

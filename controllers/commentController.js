@@ -1,12 +1,5 @@
 const db = require("../models");
 
-exports.new = (req, res) => {
-  // find campground by id
-  db.Campground.findById(req.params.id).populate('comments')
-    .then(campground => res.render("comments/new", {campground: campground}))
-    .catch(err => res.send(err))
-};
-
 exports.create = (req, res) => {
   //lookup campground using ID
   db.Campground.findById(req.params.id)
@@ -22,22 +15,14 @@ exports.create = (req, res) => {
           campground.save();
           console.log(comment);
           req.flash('success', 'Created a comment!');
-          res.redirect('/campgrounds/' + campground._id);
+          res.redirect(`/campgrounds/${campground._id}`);
         })
-        .catch(err => console.log(err))
+        .catch(err => req.flash('error', err.status))
     })
     .catch(err => {
-      console.log(err);
-      res.redirect("/campgrounds");
+      req.flash('error', err.status);
+      res.redirect(`/campgrounds`);
     })
-};
-
-exports.getEditForm = (req, res) => {
-  // find campground by id
-  db.Comment.findById(req.params.commentId)
-    .then(comment =>
-      res.render("comments/edit", {campground_id: req.params.id, comment: comment}))
-    .catch(err => console.log(err))
 };
 
 exports.deleteComment = (req, res) => {
@@ -46,16 +31,10 @@ exports.deleteComment = (req, res) => {
       req.flash('success', 'Your comment was deleted!');
       res.redirect(req.get('referer'));
     })
-    .catch(err => res.redirect("/campgrounds/" + req.params.id))
-};
-
-exports.editComment = (req, res) => {
-  db.Comment.findByIdAndUpdate(req.params.commentId, req.body.comment)
-    .then(() => {
-      req.flash('success', 'Your comment was updated!');
-      res.redirect("/campgrounds/" + req.params.id);
+    .catch(err => {
+      req.flash('error', err.status);
+      res.redirect("/campgrounds/" + req.params.id)
     })
-    .catch(err => console.log(err))
 };
 
 module.exports = exports;

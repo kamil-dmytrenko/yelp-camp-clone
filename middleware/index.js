@@ -6,7 +6,7 @@ module.exports = {
       return next();
     }
     req.flash("error", "You must be signed in to do that!");
-    res.redirect("/login");
+    res.redirect("back");
   },
 
   checkUserCampground: (req, res, next) => {
@@ -18,13 +18,13 @@ module.exports = {
             }
             else {
               req.flash("error", "You don't have permission to do that!");
-              res.redirect("/campgrounds/" + req.params.id);
+              res.redirect("back");
             }
           })
     }
     else {
       req.flash("error", "You need to be signed in to do that!");
-      res.redirect("/login");
+      res.redirect("back");
     }
   },
 
@@ -37,12 +37,12 @@ module.exports = {
           }
           else {
             req.flash("error", "You don't have permission to do that!");
-            res.redirect("/campgrounds/" + req.params.id);
+            res.redirect("back");
           }
         })
     } else {
       req.flash("error", "You need to be signed in to do that!");
-      res.redirect("login");
+      res.redirect("back");
     }
   }
 };

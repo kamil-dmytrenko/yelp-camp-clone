@@ -1,39 +1,185 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>YelpCamp</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/stylesheets/main.css">
-        <script src="https://code.jquery.com/jquery-git2.min.js"></script>
-    </head>
-    <body>
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">YelpCamp</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <% if(!currentUser){ %>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/register">Sign Up</a></li>
-                    <% } else { %>
-                        <li><a href="#">Signed In As <%= currentUser.username %></a></li>
-                        <li><a href="/logout">Logout</a></li>
-                    <% } %>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-    <div class="container">
-       <% if(error && error.length > 0) { %>
-         <div class="alert alert-danger"><p><%=error %></p></div>
-       <% } %>
-       
-       <% if(success && success.length > 0) { %>
-         <div class="alert alert-success"><p><%= success %></p></div>
-       <% } %>
+<nav class="navbar navbar-color-on-scroll fixed-top navbar-expand-lg navbar-transparent" color-on-scroll="100" id="sectionsNav">
+  <div class="container">
+      <div class="navbar-translate">
+        <a class="navbar-brand" href="/">YelpCamp </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+          <% if(!currentUser){ %>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" data-toggle="modal" data-target="#loginModal" data-placement="bottom" href="#">
+              <i class="fa fa-sign-in-alt"></i>Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" data-toggle="modal" data-target="#registerModal" data-placement="bottom" href="#">
+              <i class="fa fa-user-plus"></i>Sign Up</a>
+          </li>
+          <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="#">
+              <i class="fa fa-user"></i><%= currentUser.username %></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" data-placement="bottom" href="/logout">
+              <i class="fa fa-sign-out-alt"></i>Logout</a>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+  </div>
+</nav>
+
+<% if(error && error.length > 0) { %>
+<div class="alert alert-danger show fade">
+  <div class="container">
+    <div class="alert-icon">
+      <i class="material-icons">error_outline</i>
     </div>
-    <div class="container">
-       
+    <b>Error Alert:</b><%=error %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true"><i class="material-icons">clear</i></span>
+    </button>
+  </div>
+</div>
+<% } else if(success && success.length > 0) { %>
+<div class="alert alert-success show fade">
+  <div class="container">
+    <div class="alert-icon">
+      <i class="material-icons">check</i>
+    </div>
+    <b>Success Alert:</b><%= success %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true"><i class="material-icons">clear</i></span>
+    </button>
+  </div>
+</div>
+<% } %>
+
+
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/login" method="post">
+          <div class="form-group">
+            <label for="LoginInput" class="bmd-label-floating">Enter login</label>
+            <input class="form-control" id="LoginInput" name="username" type="text" required>
+          </div>
+          <div class="form-group">
+            <label for="PasswordInput" class="bmd-label-floating">Enter password</label>
+            <input class="form-control" id="PasswordInput" name="password" type="password" required>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="" disabled> Remember me
+                <span class="form-check-sign">
+                    <span class="check"></span>
+                  </span>
+              </label>
+            </div>
+          </div>
+          <button class="btn btn-block btn btn-primary btn-round">Login</button>
+        </form>
+        <div class="text-center">
+          <a class="d-block small mt-3" data-dismiss="modal" data-toggle="modal" data-target="#registerModal" href="#">Register an Account</a>
+          <a class="d-block small" href="#" disabled="">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/register" method="post">
+          <div class="form-group">
+            <label for="LoginInput" class="bmd-label-floating">Enter login</label>
+            <input class="form-control" id="LoginInput" name="username" type="text" required>
+          </div>
+          <div class="form-group">
+            <label for="PasswordInput" class="bmd-label-floating">Password</label>
+            <input class="form-control" id="PasswordInput" name="password" type="password" required>
+          </div>
+          <div class="form-group">
+            <label for="ConfirmPassword" class="bmd-label-floating">Confirm password</label>
+            <input class="form-control" id="ConfirmPassword" type="password" required>
+          </div>
+          <button class="btn btn-primary btn-block btn-round">Register</button>
+        </form>
+        <div class="text-center">
+          <a class="d-block small mt-3" data-dismiss="modal" data-toggle="modal" data-target="#loginModal" href="#">Already have an account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="newCampModal" tabindex="-1" role="dialog" aria-labelledby="newCampModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form action="/campgrounds" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="CampNameInput" class="bmd-label-floating">Campground name</label>
+            <input class="form-control" type="text" id="CampNameInput" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="DescriptionInput" class="bmd-label-floating">Tell us more about it</label>
+            <textarea class="form-control" id="DescriptionInput" rows="5" name="description" required></textarea>
+          </div>
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6 d-flex flex-column">
+                <label for="ImgUploadInput">Upload photos (You cannot change them later!)</label>
+                <% for (let i = 0; i < 4; i++) { %>
+                <div class="fileinput fileinput-new" data-provides="fileinput">
+                  <span class="btn btn-primary btn-file">
+                    <span class="fileinput-new">Select file</span>
+                    <span class="fileinput-exists">Change</span>
+                    <input type="file" id="ImgUploadInput" name="image" accept="image/*">
+                  </span>
+                  <span class="fileinput-filename"></span>
+                  <a href="#" class="close fileinput-exists" data-dismiss="fileinput">&times;</a>
+                </div>
+                <% } %>
+              </div>
+              <div class="col-md-6">
+                <label for="FacilitiesInput">Select facilities at the camp</label>
+                <select multiple id="FacilitiesInput" name="facilities[]" class="selectpicker form-control" required >
+                  <option value="water">water</option>
+                  <option value="wifi">wifi</option>
+                  <option value="electricity">electricity</option>
+                  <option value="fireplace">fireplace</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block">Submit!</button>
+        </form>
+        <div class="text-center">
+          <a class="d-block small mt-3" data-dismiss="modal" data-toggle="modal" data-target="#newCampModal" href="#">Close</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

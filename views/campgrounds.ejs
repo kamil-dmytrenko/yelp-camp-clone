@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include partials/head.ejs %>
+  <link rel="stylesheet" href="stylesheets/campgrounds.css">
+</head>
+<body>
+<% include partials/header.ejs %>
+
+<div class="page-header header-filter clear-filter" data-parallax="true">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 ml-auto mr-auto">
+        <div class="brand text-center">
+          <h1>Welcome To YelpCamp!</h1>
+          <h3>View our hand-picked campgrounds from all over the world</h3>
+          <hr>
+          <a role="button" class="btn btn-secondary btn-round" data-toggle="modal" data-target="#newCampModal" href="#">Add New Campground</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main main-raised">
+  <div class="section section-basic">
+    <form class="search-bar" action="/campgrounds" method="GET">
+      <div class="form-group col-md-6 d-flex flex-row">
+
+        <label for="SearchInput" class="bmd-label-floating">Search</label>
+        <input type="text" id="SearchInput" name="search" class="form-control">
+        <button class="btn btn-primary btn-round btn-fab"><i class="fa fa-search"></i></button>
+      </div>
+    </form>
+    <div class="col-md-12 mt-5 text-center">
+      <% if(noMatch !== null) { %>
+      <h3><%= noMatch %></h3>
+      <% } %>
+    </div>
+    <div class="campground-display">
+      <% campgrounds.forEach(function(campground){ %>
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div>
+            <img class="card-img-top" src="<%= campground.images[0] %>" alt="Card image cap">
+            <div class="overlay">
+              <a class="btn btn-outline-secondary" href="/campgrounds/<%= campground._id %>" role="button">More Info</a>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <h3 class="card-title"><%= campground.name %></h3>
+            <p class="card-text"></p>
+            <p class="card-text"><%= campground.description.substring(0, 50) %>...</p>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+
+<footer class="page-footer font-small bg-light mt-5">
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-3">© 2018 Copyright:
+    <a href="#"> YelpCamp</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+
+
+
+<% include partials/footer.ejs %>
+</body>
+</html>

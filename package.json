@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "YelpCampclone",
   "main": "app.js",
+  "engines": {
+    "node": "10.5.0",
+    "npm": "6.1.0"
+  },
   "scripts": {
     "pretest": "eslint --ignore-path .gitignore .",
     "dev": "nodemon --exec babel-node --trace-warnings app.js",

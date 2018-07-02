@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "eslint --ignore-path .gitignore .",
     "dev": "nodemon --exec babel-node --trace-warnings app.js",
-    "start": "node --exec babel-node --trace-warnings app.js"
+    "start": "node --trace-warnings app.js"
   },
   "author": "Kamil",
   "license": "ISC",

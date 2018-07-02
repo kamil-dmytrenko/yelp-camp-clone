@@ -4,7 +4,7 @@
   "description": "YelpCampclone",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
+    "dev": "nodemon --exec babel-node --trace-warnings app.js",
     "start": "node app.js"
   },
   "author": "Kamil",
@@ -28,6 +28,7 @@
     "request": "^2.87.0"
   },
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
     "nodemon": "^1.17.5"
   }
 }

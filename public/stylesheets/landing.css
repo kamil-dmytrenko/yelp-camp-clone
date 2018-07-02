@@ -1,7 +1,12 @@
+@keyframes background_imgs {
+
+}
+
 body {
   background-size: cover;
-  background: url(https://images.unsplash.com/photo-1445308394109-4ec2920981b1?dpr=2&fit=crop&fm=jpg&h=825&ixlib=rb-0.3.5&q=50&w=1450) center;
-  transition: background 1.5s linear;
+  background-position: center;
+  background-image: url(../img/photo-1445888985293-8e1b904061c4.jpeg);
+  transition: background 2s linear;
     -webkit-backface-visibility: hidden;
     -webkit-transition: background-image 1.5s linear;
     -webkit-transform: translate3d(0,0,0);

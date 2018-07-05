@@ -1,15 +1,43 @@
 @keyframes background_imgs {
-
+  0% {
+    background-image: url(../img/photo-1414016642750-7fdd78dc33d9.jpeg);
+  }
+  10% {
+    background-image: url(../img/photo-1444012104069-996724bf4a0a.jpeg);
+  }
+  20% {
+    background-image: url(../img/photo-1444012236767-1b471c68781c.jpeg);
+  }
+  30% {
+    background-image: url(../img/photo-1445888985293-8e1b904061c4.jpeg);
+  }
+  40% {
+    background-image: url(../img/photo-1444228250525-3d441b642d12.jpeg);
+  }
+  50% {
+    background-image: url(../img/photo-1445308394109-4ec2920981b1.jpeg);
+  }
+  60% {
+    background-image: url(../img/photo-1445888761652-fc13cbb0d819.jpeg);
+  }
+  70% {
+    background-image: url(../img/photo-1444210971048-6130cf0c46cf.jpeg);
+  }
+  80% {
+    background-image: url(../img/photo-1445888985293-8e1b904061c4.jpeg);
+  }
+  90% {
+    background-image: url(../img/photo-1445888985293-8e1b904061c4.jpeg);
+  }
+  100% {
+    background-image: url(../img/photo-1445888985293-8e1b904061c4.jpeg);
+  }
 }
 
 body {
   background-size: cover;
   background-position: center;
-  background-image: url(../img/photo-1445888985293-8e1b904061c4.jpeg);
-  transition: background 2s linear;
-    -webkit-backface-visibility: hidden;
-    -webkit-transition: background-image 1.5s linear;
-    -webkit-transform: translate3d(0,0,0);
+  animation: background_imgs 30s ease-in-out infinite;
 }
 
 body,

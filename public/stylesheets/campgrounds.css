@@ -3,7 +3,7 @@ h1 {
 }
 
 div.page-header {
-  background-image: url('../img/campgrounds-background.jpg');
+  background-image: url('http://res.cloudinary.com/don2vlwkd/image/upload/v1530188632/yelp-camp-images/dark_forest.jpg');
 }
 
 .search-bar {
